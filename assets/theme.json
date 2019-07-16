@@ -1,0 +1,12 @@
+{
+    "company": {
+        "logo": "https://excilys.com/wp-content/uploads/2017/01/excilys495-295.png",
+        "name": "Excilys",
+        "phone": "064575444",
+        "theme": {
+            "colors": {
+                "primary": 4292
+            }
+        }
+    }
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'blocs/themes.dart';
+import 'blocs/theme.dart';
 import 'pages/home.dart';
 
 class MaterialAppWithTheme extends StatelessWidget {

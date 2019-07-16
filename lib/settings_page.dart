@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'blocs/themes.dart';
+import 'blocs/theme.dart';
 
 class SettingsPage extends StatelessWidget {
   @override
@@ -13,16 +13,6 @@ class SettingsPage extends StatelessWidget {
         title: Text("Settings"),
       ),
       body: Container(
-        child: Column(
-          children: <Widget>[
-            FlatButton(
-                child: Text('Dark Theme'),
-                onPressed: () => _themeChanger.setTheme(ThemeData.dark())),
-            FlatButton(
-                child: Text('Light Theme'),
-                onPressed: () => _themeChanger.setTheme(ThemeData.light())),
-          ],
-        ),
       ),
     );
   }
