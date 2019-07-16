@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:async';
-
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart';
 
 import 'home.dart';
 
@@ -22,4 +17,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

@@ -1,29 +1,39 @@
+import 'dart:io';
 
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'tabs/first.dart';
 import 'tabs/second.dart';
 import 'tabs/third.dart';
 
 class MyHomePage extends StatefulWidget {
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  TabController controller;
+  final tutorialsUrl = "https://www.tutorialspoint.com/sql/sql_tutorial.pdf";
+  final integrationUrl =
+      "http://www.inf.ed.ac.uk/teaching/courses/st/2011-12/Resource-folder/10_integration.pdf";
+  final samplesUrl = "https://nofuss.co.za/talks/flutter_talk_26_nov_2018.pdf";
+  String currentPath;
 
-TabController controller;
-
-@override
+  @override
   void initState() {
-    super.initState();
+    createResources();
+    getRootDirectory().then((String value){
 
+    });
+
+    super.initState();
     // Initialize the Tab Controller
     controller = new TabController(length: 3, vsync: this);
   }
-  
+
   @override
   void dispose() {
     // Dispose of the Tab Controller
@@ -34,29 +44,23 @@ TabController controller;
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      // Appbar
       appBar: new AppBar(
-        // Title
         title: new Text("Main Menu"),
-        // Set the background color of the App Bar
         backgroundColor: Colors.lightBlue,
       ),
-      // Set the TabBar view as the body of the Scaffold
       body: new TabBarView(
-        // Add tabs as widgets
-        children: <Widget>[new FirstTab(), new SecondTab(), new ThirdTab()],
-        // set the controller
+        children: <Widget>[
+          new FirstTab(path: currentPath),
+          new SecondTab(),
+          new ThirdTab()
+        ],
         controller: controller,
       ),
-      // Set the bottom navigation bar
       bottomNavigationBar: new Material(
-        // set the color of the bottom navigation bar
         color: Colors.lightBlue,
-        // set the tab bar as the child of bottom navigation bar
         child: new TabBar(
           tabs: <Tab>[
             new Tab(
-              // set icon to the tab
               icon: new Icon(Icons.favorite),
             ),
             new Tab(
@@ -66,11 +70,61 @@ TabController controller;
               icon: new Icon(Icons.airport_shuttle),
             ),
           ],
-          // setup the controller
           controller: controller,
         ),
       ),
     );
   }
 
+  Future<String> getRootDirectory() async {
+    final dir = await getApplicationDocumentsDirectory();
+    print(dir.path);
+    var rootPath;
+    dir.exists().then((isThere) {
+      isThere
+          ? dir
+              .list(recursive: false, followLinks: false)
+              .listen((FileSystemEntity entity) {
+              if (entity is Directory) {
+                rootPath = entity.path;
+                print(entity.path);
+              }
+            })
+          : print('non-existent');
+    });
+    return rootPath;
+  }
+
+  Future<void> createResources() async {
+    Dio dio = Dio();
+
+    try {
+      var dir = await getApplicationDocumentsDirectory();
+
+      new Directory('${dir.path}/test/integration')
+          .create(recursive: true)
+          .then((Directory directory) {
+        print(directory.path);
+      });
+
+      new Directory('${dir.path}/test/samples')
+          .create(recursive: true)
+          .then((Directory directory) {
+        print(directory.path);
+      });
+
+      new Directory('${dir.path}/test/tutorials')
+          .create(recursive: true)
+          .then((Directory directory) {
+        print(directory.path);
+      });
+
+      await dio.download(
+          tutorialsUrl, "${dir.path}/test/tutorials/tutorials.pdf");
+      await dio.download(
+          integrationUrl, "${dir.path}/test/integration/tutorials.pdf");
+      await dio.download(samplesUrl, "${dir.path}/test/samples/tutorials.pdf");
+      
+    } catch (e) {}
+  }
 }

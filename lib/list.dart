@@ -1,34 +1,43 @@
 import 'dart:io';
 
-import 'package:doc_reader/folder.dart';
+import 'package:doc_reader/tabs/first.dart';
 import 'package:flutter/material.dart';
 
-import 'detail.dart';
-
 class EntryList extends StatefulWidget {
+  final String path;
+
+  EntryList({Key key, this.path}) : super(key: key);
+
   @override
   _EntryListState createState() => _EntryListState();
 }
 
 class _EntryListState extends State<EntryList> {
-  final Directory currentDir =
-      new Directory('/home/flora/Documents/repositories/Flutter/test');
+  String currentPath;
+  List<String> folders;
+
+  @override
+  void initState() {
+    super.initState();
+
+    currentPath = widget.path;
+    folders = fetchFolders();
+    
+  }
 
   @override
   Widget build(BuildContext context) {
-    final folders = fetchFolders();
-
     return Scaffold(
         body: new ListView.builder(
       itemCount: folders.length,
       itemBuilder: (context, index) {
         return ListTile(
-          title: Text(folders[index].title),
+          title: Text(folders[index].toString()),
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => DetailScreen(folder: folders[index]),
+                builder: (context) => buildParent(index),
               ),
             );
           },
@@ -37,16 +46,20 @@ class _EntryListState extends State<EntryList> {
     ));
   }
 
-  List<Folder> fetchFolders() {
-    List<Folder> folderList = List<Folder>.generate(
-      20,
-      (i) => Folder(
-        'Folder $i',
-      ),
-    );
+  FirstTab buildParent(index) {
+    var newPath = currentPath + folders[index].toString();
+    currentPath = newPath;
+    return new FirstTab(path: currentPath);
+  }
 
-    (currentDir.exists() == true) ? print('exists') : print('non-existent');
-
-    return folderList;
+  List<String> fetchFolders() {
+    List<String> entities = new List();
+    Directory currentDir = new Directory(currentPath);
+    currentDir
+        .list(recursive: true, followLinks: false)
+        .listen((FileSystemEntity entity) {
+      entities.add(entity.toString());
+    });
+    return entities;
   }
 }
