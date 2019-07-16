@@ -1,16 +1,18 @@
+import 'package:doc_reader/models/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'blocs/theme.dart';
-import 'pages/home.dart';
+import 'home_container.dart';
 
-class MaterialAppWithTheme extends StatelessWidget {
+
+
+class MyAppWithTheme extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Provider.of<ThemeChanger>(context);
 
     return MaterialApp(
-      home: MyHomePage(),
+      home: HomeContainer(),
       theme: theme.getTheme(),
     );
   }
